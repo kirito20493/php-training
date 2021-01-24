@@ -1,0 +1,4 @@
+admin 123456
+giabao 123123
+minhtam giabao123
+giabao123 123456
