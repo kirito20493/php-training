@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $read = @fopen('data.txt','r');
     $u = array();
     $p = array();
+    $a = array();
     if($read)
     {
         while(!feof($read))
@@ -20,7 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 array_push($u,$subStr[0]);
             }
             if (isset($subStr[1])){
-                array_push($p,$subStr[1]);
+                array_push($p,rtrim($subStr[1]));
+            }
+            if (isset($subStr[2])){
+                array_push($a,rtrim($subStr[2]));
             }
         }
 
@@ -29,23 +33,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo $error['data'];
     }
 
-
     // login!!
+    
     if (empty($_POST['username']) || empty($_POST['password'])) {
-        $error['password'] = 'bạn không được bỏ trống Tài khoản hoặc Mật khẩu.';
+        $error['password'] = 'Tài khoản hoặc Mật khẩu không được bỏ trống, Vui lòng nhập!';
     } else {
         $username = $_POST['username'];
         $password = $_POST['password'];
         for ($i = 0; $i < (count($u) - 1); $i++)
         {   
-            // echo count($u);
-            // echo ($p[$i]);
-            if(($username == $u[$i]) && ($password == '123456')) {
+            if(($username == $u[$i]) && ($password == $p[$i])) {
+    
                 $_SESSION['username'] = $_POST['username'];
                 $_SESSION['password'] = $_POST['password'];
+                $_SESSION['avatar'] = $a[$i];
 
                 setcookie('username',$_POST['username'],time()+3000);
                 setcookie('password',$_POST['password'],time()+3000);
+                setcookie('avatar',$a[$i],time()+3000);
                 header('Location: home.php');
             } else {
                 $error['password'] = "Tài khoản hoặc mật khẩu không chính xác";
