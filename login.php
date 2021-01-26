@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $u = array();
     $p = array();
     $a = array();
+    $e = array();
     if($read)
     {
         while(!feof($read))
@@ -25,6 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             if (isset($subStr[2])){
                 array_push($a,rtrim($subStr[2]));
+            }
+            if (isset($subStr[3])){
+                array_push($e,rtrim($subStr[3]));
             }
         }
 
@@ -50,10 +54,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $_SESSION['username'] = $_POST['username'];
                     $_SESSION['password'] = $_POST['password'];
                     $_SESSION['avatar'] = $a[$i];
+                    $_SESSION['email'] = $e[$i];
 
                     setcookie('username',$_POST['username'],time()+3000);
                     setcookie('password',$_POST['password'],time()+3000);
                     setcookie('avatar',$a[$i],time()+3000);
+                    setcookie('email',$e[$i],time()+3000);
                     header('Location: home.php');
                 } else {
                     $error['password'] = "Mật khẩu không chính xác";

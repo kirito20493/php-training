@@ -1,9 +1,16 @@
 <?php
+require 'lib/PHPMailer.php';
+require 'lib/SMTP.php';
+require 'lib/Exception.php';
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 require 'validate.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $error = array();
-
+    //creat user
     if (empty($_POST['username'])) {
         $error['username'] = 'bạn cần nhập username';
     } else {
@@ -14,27 +21,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    if (empty($_POST['email'])) {
-        $error['email'] = 'bạn cần nhập email ';
-    } else {
-        if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
-            $error['email'] = "Email không đúng định dạng!";
-        }else {
-            $email = $_POST['email'];
-            $subject = "Test send email";
-            $msg = "Test send email.\nThank you very much!";
-            $headers = "From: giabao@NTA.com";
-            // send email
-            mail($email, $subject, $msg, $headers);            
-        }
-    }
-
-
+    //creat password
     if (empty($_POST['password'])) {
         $error['password'] = 'bạn cần nhập password ';
     } else {
         if(!isPassWord($_POST['password'])) {
-            $error['password'] = 'PassWord không được có ký tự trống!'; 
+            $error['password'] = 'PassWord phải gôm chữ + số và không có ký tự trống!'; 
         }else {
             $password = $_POST['password'];
         }
@@ -49,28 +41,60 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $password_confirmation = $_POST['password_confirmation'];
         }
     }
+
+    //send mail
+    if (empty($_POST['email'])) {
+        $error['email'] = 'bạn cần nhập email ';
+    } else {
+        if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+            $error['email'] = "Email không đúng định dạng!";
+        }else {
+            $email = $_POST['email'];
+            $subject = "Successful registration confirmation!";
+            if (isset($username) && isset($password)) {
+                $msg = "User: ".$username."\nPassowrd: ".$password."\nThank you very much!";
+            }
+            // send email          
+            $mail = new PHPMailer();
+            $mail->isSMTP();  
+            $mail->Host       = 'smtp.gmail.com'; 
+            $mail->SMTPAuth   = true;
+            $mail->SMTPSecure = "tls"; 
+            $mail->Port       = 587;  
+            $mail->Username   = 'kiritodnvn@gmail.com';               
+            $mail->Password   = 'giabao204';  
+            $mail->Subject = $subject;
+            $mail->setFrom($email);
+            if (isset($msg)){
+                $mail->Body    = $msg;
+            }
+            $mail->addAddress($email); 
+        }
+    }
+
+
     // set avatar
-    if(isset($_FILES['avatar'])){
-        // $errors= array();
+    if(isset($_FILES['avatar'])) {
+        $errors= array();
         $file_name = $_FILES['avatar']['name'];
         $file_size =$_FILES['avatar']['size'];
         $file_tmp =$_FILES['avatar']['tmp_name'];
         $file_type=$_FILES['avatar']['type'];
-        $file_subName = explode('.',$_FILES['avatar']['name']);
+        $file_subName = explode('.', $_FILES['avatar']['name']);
         $file_ext=strtolower(end($file_subName));
         
         $expensions= array("jpeg","jpg","png");
         
-        if(in_array($file_ext,$expensions)=== false){
-           $errors="Không chấp nhận định dạng ảnh có đuôi này, mời bạn chọn JPEG hoặc PNG.";
+        if(in_array($file_ext, $expensions)=== false) {
+            $errors="Không chấp nhận định dạng ảnh có đuôi này, mời bạn chọn JPEG hoặc PNG.";
         }
         
-        if($file_size > 2097152){
-           $error='Kích cỡ file quá lớn!';
+        if($file_size > 2097152) {
+            $error='Kích cỡ file quá lớn!';
         }
         
-        if(empty($errors)==true){
-            move_uploaded_file($file_tmp,"images/".$file_name);
+        if(empty($errors)==true) {
+            move_uploaded_file($file_tmp, "images/".$file_name);
         }
         else{
             $error['avatar'] = $errors;
@@ -82,9 +106,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if(empty($error)) {
         // write txt
         $myfile = fopen("data.txt", "a") or die("Unable to open file!");
-        $txt = "{$username} {$password} {$file_name}\n";
+        $txt = "{$username} {$password} {$file_name} {$email}\n";
         fputs($myfile, $txt);
         fclose($myfile);
+        // send mail
+        $mail->send();
+        $mail->smtpClose();
+
+
         header('Location: login.php');
         // echo $file_avt;
     }

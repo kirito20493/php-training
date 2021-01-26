@@ -1,14 +1,32 @@
-label {
-    margin-right: 50px;
-}
-img {
-    width: 200px;
-    height: 200px;
-    /* margin-bottom: 100px; */
-}
 .main {
-    margin-bottom: 50px;
+    width: 100%;
+    background-color:#f1f1f1;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+}
+.container {
+    width: 300px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.container_infor {
+    color: red;
+    font-size: 30px;
+    font-weight: bold;
+}
+.avatar {
+    width: 100px;
+    height: 100px;
+}
+.button {
+    width: 300px;
+    height: 0 auto;
+    display: flex;
+    justify-content: space-between;
 }

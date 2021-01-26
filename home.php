@@ -1,19 +1,13 @@
 <?php
 session_start();    
 
-    // if (isset($_SESSION['username']) && isset($_SESSION['password'])) {
-    //     echo "Hello ".$_SESSION['username']."!<br>";
-    //     echo "Password is ".$_SESSION['username']."!<br>";
-    // } else {
-    //     echo ("Haven't SESSION <br>");
-    // }
-
-    // if (isset($_COOKIE['username']) && isset($_COOKIE['password'])) {
-    //     echo "Hello ".$_COOKIE['username']."!<br>";
-    //     echo "Password is ".$_COOKIE['password']."!<br>";
-    // } else {
-    //     echo ("Haven't COOKIE <br>");
-    // }
+    if (isset($_SESSION['username']) && isset($_SESSION['password'])) {
+        $username = $_SESSION['username'];
+        $password = $_SESSION['password'];
+        $email = $_SESSION['email'];
+    } else {
+        header('Location: login.php');
+    }
 ?>
 
 <!DOCTYPE html>
@@ -28,15 +22,25 @@ session_start();
     
     <body>
     <div class="main">
-        <p>
-            Hello <?php echo $_SESSION['username']; ?> !!!
-        </p>
-        <img src="./images/<?php echo $_SESSION['avatar']; ?>" alt="">  
-        <label for="">Avatar</label>
+        <div class="container">
+            <h3 class="container_infor">USER'S INFORMATION</h3>
+            <img class="avatar" src="./images/<?php echo $_SESSION['avatar']; ?>" alt="">  
+            <p class='container_username'>
+                Hello <?php echo $username; ?> !!!
+            </p>
+            <p class='container_username'>
+                Your Email:  <?php echo $email; ?> !!!
+            </p>
+        </div>
+        
+        <div class="button">
+            <a href="logout.php">LOG OUT</a>
+            <a href="changePassword.php">Đổi mật khẩu!!</a>
+            <a href="changeEmail.php">Đổi Email!!</a>
+        </div>
     </div>
     
-    <a href="logout.php">LOG OUT</a>
-      
+    
    </body>
 </body>
 </html>
