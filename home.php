@@ -31,7 +31,8 @@ session_start();
         <p>
             Hello <?php echo $_SESSION['username']; ?> !!!
         </p>
-        <label for="">Avatar</label><img src="./images/<?php echo $_SESSION['avatar']; ?>" alt="">  
+        <img src="./images/<?php echo $_SESSION['avatar']; ?>" alt="">  
+        <label for="">Avatar</label>
     </div>
     
     <a href="logout.php">LOG OUT</a>

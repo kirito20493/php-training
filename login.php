@@ -40,23 +40,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $username = $_POST['username'];
         $password = $_POST['password'];
-        for ($i = 0; $i < (count($u) - 1); $i++)
-        {   
-            if(($username == $u[$i]) && ($password == $p[$i])) {
-    
-                $_SESSION['username'] = $_POST['username'];
-                $_SESSION['password'] = $_POST['password'];
-                $_SESSION['avatar'] = $a[$i];
+        if (!in_array($username,$u)) {
+            $error['username'] = 'Tài khoản này không tồn tại!';
+        } else {
+            for ($i = 0; $i < (count($u) - 1); $i++)
+            {   
+                if(($username == $u[$i]) && ($password == $p[$i])) {
+        
+                    $_SESSION['username'] = $_POST['username'];
+                    $_SESSION['password'] = $_POST['password'];
+                    $_SESSION['avatar'] = $a[$i];
 
-                setcookie('username',$_POST['username'],time()+3000);
-                setcookie('password',$_POST['password'],time()+3000);
-                setcookie('avatar',$a[$i],time()+3000);
-                header('Location: home.php');
-            } else {
-                $error['password'] = "Tài khoản hoặc mật khẩu không chính xác";
+                    setcookie('username',$_POST['username'],time()+3000);
+                    setcookie('password',$_POST['password'],time()+3000);
+                    setcookie('avatar',$a[$i],time()+3000);
+                    header('Location: home.php');
+                } else {
+                    $error['password'] = "Mật khẩu không chính xác";
+                }
+
             }
-
         }
+        
     }
 }  
 ?>
