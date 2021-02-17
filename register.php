@@ -10,16 +10,19 @@ require 'validate.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $error = array();
+
     //creat user
+
     if (empty($_POST['username'])) {
         $error['username'] = 'bạn cần nhập username';
     } else {
         if(!isUserName($_POST['username'])) {
-            $error['username'] = 'Username không đúng định dạng!'; 
+             $error['username'] = 'Username không đúng định dạng!'; 
         }else {
             $username = $_POST['username'];
         }
     }
+
 
     //creat password
     if (empty($_POST['password'])) {
@@ -94,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         if(empty($errors)==true) {
-            move_uploaded_file($file_tmp, "images/".$file_name);
+            move_uploaded_file($file_tmp, "./images/".$file_name);
         }
         else{
             $error['avatar'] = $errors;
@@ -105,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if(empty($error)) {
         // write txt
-        $myfile = fopen("data.txt", "a") or die("Unable to open file!");
+        $myfile = fopen("data.txt", "w") or die("Unable to open file!");
         $txt = "{$username} {$password} {$file_name} {$email}\n";
         fputs($myfile, $txt);
         fclose($myfile);
